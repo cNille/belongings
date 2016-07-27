@@ -1,6 +1,12 @@
 <section>
   <div class="page-header">
     <h1 data-ng-bind="vm.storeroom.name"></h1>
+  
+    <label for="parent">
+      Parent
+    </label>
+    <span name="parent" ng-data-bind="vm.storeroom.parnent"></span>
+
   </div>
   <div class="pull-right"
        data-ng-show="vm.storeroom.isCurrentUserOwner">
