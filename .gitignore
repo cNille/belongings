@@ -1,3 +1,6 @@
+# My scripts
+*.sh
+
 # OS
 # ===========
 .DS_Store
