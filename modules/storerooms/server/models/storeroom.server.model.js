@@ -16,6 +16,10 @@ var StoreroomSchema = new Schema({
     required: 'Please fill Storeroom name',
     trim: true
   },
+  parent: {
+    type: Schema.ObjectId,
+    ref: 'Storeroom'
+  },
   created: {
     type: Date,
     default: Date.now
