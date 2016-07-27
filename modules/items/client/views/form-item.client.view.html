@@ -8,7 +8,7 @@
         <!-- Name -->
         <div class="form-group" show-errors>
           <label class="control-label" for="name">Name</label>
-          <input name="name" type="text" ng-model="vm.item.name" id="name" class="form-control" placeholder="Name" required>
+          <input name="name" type="text" ng-model="vm.item.name" id="name" class="form-control" placeholder="Name" required autofocus>
           <div ng-messages="vm.form.itemForm.name.$error" role="alert">
             <p class="help-block error-text" ng-message="required">Item name is required.</p>
           </div>
@@ -18,7 +18,7 @@
           <label for="storerooms"> Storerooms </label><br>
           Select storeroom.<br>
 
-            <select name="storerooms" id="storerooms" ng-model="vm.items.storeroom" ng-options='string for string in storerooms' required>
+            <select name="storerooms" id="storerooms" ng-model="vm.items.storeroom" ng-options='string for string in storerooms'>
             </select><br>
           <tt>storeroom = {{ vm.items.storeroom }}</tt><br>
         </div>

@@ -10,8 +10,8 @@
         Posted on
         <span data-ng-bind="item.created | date:'mediumDate'"></span>
         by
-        <span data-ng-if="item.user" data-ng-bind="item.user.displayName"></span>
-        <span data-ng-if="!item.user">Deleted User</span>
+        <span data-ng-if="item.owner" data-ng-bind="item.owner.displayName"></span>
+        <span data-ng-if="!item.owner">Deleted User</span>
       </small>
       <h4 class="list-group-item-heading" data-ng-bind="item.name"></h4>
     </a>
