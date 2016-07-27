@@ -6,9 +6,9 @@
     .module('items')
     .controller('ItemsController', ItemsController);
 
-  ItemsController.$inject = ['$scope', '$state', 'Authentication', 'itemResolve'];
+  ItemsController.$inject = ['$scope', '$state', 'Authentication', 'itemResolve', 'StoreroomsService'];
 
-  function ItemsController ($scope, $state, Authentication, item) {
+  function ItemsController ($scope, $state, Authentication, item, StoreroomsService) {
     var vm = this;
 
     vm.authentication = Authentication;
@@ -17,6 +17,16 @@
     vm.form = {};
     vm.remove = remove;
     vm.save = save;
+
+
+    // Get storerooms
+    $scope.storerooms = [];
+    StoreroomsService.query().$promise.then(function(result) {
+      angular.forEach(result, function(storeroom) {
+        $scope.storerooms.push(storeroom.name);      
+      });
+    });
+
 
     // Remove existing Item
     function remove() {
