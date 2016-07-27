@@ -1,3 +1,4 @@
+/* globals key */
 'use strict';
 
 angular.module('core').controller('HeaderController', ['$scope', '$state', 'Authentication', 'Menus',
@@ -19,5 +20,20 @@ angular.module('core').controller('HeaderController', ['$scope', '$state', 'Auth
     $scope.$on('$stateChangeSuccess', function () {
       $scope.isCollapsed = false;
     });
+
+    // Keymaster redirects
+    key('i+c', function() { // To_Items_Create
+      console.log('x key pressed');
+      $state.go('items.create');
+      event.preventDefault();
+      return;
+    });
+    key('i+l', function() { // To_Items_List
+      console.log('x key pressed');
+      $state.go('items.list');
+      event.preventDefault();
+      return;
+    });
+
   }
 ]);
