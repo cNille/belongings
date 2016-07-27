@@ -23,6 +23,18 @@ var ItemSchema = new Schema({
   owner: {
     type: Schema.ObjectId,
     ref: 'User'
+  },
+  storeroom: {
+    type: Schema.ObjectId,
+    ref: 'Storeroom'
+  },
+  tags: [{
+    type: String,
+    trim: true
+  }],
+  last_edited: {
+    type: Date,
+    default: Date.now
   }
 });
 
