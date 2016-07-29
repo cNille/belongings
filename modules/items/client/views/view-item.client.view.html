@@ -1,6 +1,11 @@
 <section>
   <div class="page-header">
     <h1 data-ng-bind="vm.item.name"></h1>
+    <hr>
+    <label for="storeroom">
+      Storeroom
+    </label>
+    <p name="storeroom" data-ng-bind="vm.item.storeroom"></p>
   </div>
   <div class="pull-right"
        data-ng-show="vm.item.isCurrentUserOwner">

@@ -25,8 +25,9 @@ var ItemSchema = new Schema({
     ref: 'User'
   },
   storeroom: {
-    type: Schema.ObjectId,
-    ref: 'Storeroom'
+    type: String,
+    default: '',
+    trim: true
   },
   tags: [{
     type: String,
