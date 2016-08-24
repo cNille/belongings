@@ -1,6 +1,9 @@
 # My scripts
 *.sh
 
+# Resources folder
+resources/
+
 # OS
 # ===========
 .DS_Store
