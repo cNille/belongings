@@ -29,6 +29,7 @@ module.exports = {
   sessionCollection: 'sessions',
   logo: 'modules/core/client/img/brand/logo.png',
   favicon: 'modules/core/client/img/brand/favicon.ico',
+  s3bucket: 'belongings-assets',
   uploads: {
     profileUpload: {
       dest: './modules/users/client/img/profile/uploads/', // Profile upload destination path

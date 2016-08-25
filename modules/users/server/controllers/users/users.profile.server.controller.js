@@ -12,6 +12,12 @@ var _ = require('lodash'),
   config = require(path.resolve('./config/config')),
   User = mongoose.model('User');
 
+// AWS
+var multerS3 = require('multer-s3');
+var AWS = require('aws-sdk');
+AWS.config.region = 'eu-west-1';
+var s3 = new AWS.S3({ params: { Bucket: config.s3bucket } });
+
 /**
  * Update user details
  */
@@ -51,12 +57,33 @@ exports.update = function (req, res) {
 };
 
 /**
+ * Get profile picture
+ */
+exports.getProfilePicture = function (req, res) {
+  var img = req.params.image;
+  var url = s3.getSignedUrl('getObject', { Bucket: config.s3bucket, Key: img });
+  res.redirect(url);
+};
+
+/**
  * Update profile picture
  */
 exports.changeProfilePicture = function (req, res) {
   var user = req.user;
   var message = null;
-  var upload = multer(config.uploads.profileUpload).single('newProfilePicture');
+  var fileKey = 'profile_pic_' + Date.now().toString(); // The filename we save in s3.
+  var upload = multer({
+    storage: multerS3({
+      s3: s3,
+      bucket: config.s3bucket,
+      metadata: function (req, file, cb) {
+        cb(null, { fieldName: file.fieldname });
+      },
+      key: function (req, file, cb) {
+        cb(null, fileKey);
+      }
+    })
+  }).single('newProfilePicture');
   var profileUploadFileFilter = require(path.resolve('./config/lib/multer')).profileUploadFileFilter;
   
   // Filtering to upload only images
@@ -69,7 +96,24 @@ exports.changeProfilePicture = function (req, res) {
           message: 'Error occurred while uploading profile picture'
         });
       } else {
-        user.profileImageURL = config.uploads.profileUpload.dest + req.file.filename;
+        //Success, Delete old profileImg if exists.
+        if(user.profileImageURL){
+          s3.deleteObjects({
+            Bucket: config.s3bucket,
+            Delete: {
+              Objects: [
+               { Key: user.profileImageURL }
+              ]
+            }
+          }, function(err, data) {
+            if (err)
+              return console.log(err);
+            console.log('Old profile image removed safely.');
+          });
+        }
+
+        //Replace imgurl on user with new one.
+        user.profileImageURL = fileKey;
 
         user.save(function (saveError) {
           if (saveError) {
