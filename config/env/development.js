@@ -31,6 +31,7 @@ module.exports = {
       //}
     }
   },
+  s3bucket: 'belongings-assets-test',
   app: {
     title: defaultEnvConfig.app.title + ' - Development Environment'
   },
