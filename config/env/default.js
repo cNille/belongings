@@ -32,7 +32,7 @@ module.exports = {
   s3bucket: 'belongings-assets',
   uploads: {
     profileUpload: {
-      dest: './modules/users/client/img/profile/uploads/', // Profile upload destination path
+      dest: './public/uploads/', // Profile upload destination path
       limits: {
         fileSize: 1*1024*1024 // Max file size in bytes (1 MB)
       }

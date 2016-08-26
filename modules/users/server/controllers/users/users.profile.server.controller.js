@@ -61,7 +61,12 @@ exports.update = function (req, res) {
  */
 exports.getProfilePicture = function (req, res) {
   var img = req.params.image;
-  var url = s3.getSignedUrl('getObject', { Bucket: config.s3bucket, Key: img });
+  var url;
+  if(process.env.NODE_ENV !== 'production'){
+    url = 'http://' + req.headers.host + '/uploads/' + img; 
+  } else {
+    url = s3.getSignedUrl('getObject', { Bucket: config.s3bucket, Key: img });
+  }
   res.redirect(url);
 };
 
@@ -71,22 +76,30 @@ exports.getProfilePicture = function (req, res) {
 exports.changeProfilePicture = function (req, res) {
   var user = req.user;
   var message = null;
-  var fileKey = 'profile_pic_' + Date.now().toString(); // The filename we save in s3.
-  var upload = multer({
-    storage: multerS3({
-      s3: s3,
-      bucket: config.s3bucket,
-      metadata: function (req, file, cb) {
-        cb(null, { fieldName: file.fieldname });
-      },
-      key: function (req, file, cb) {
-        cb(null, fileKey);
-      }
-    })
-  }).single('newProfilePicture');
-  var profileUploadFileFilter = require(path.resolve('./config/lib/multer')).profileUploadFileFilter;
+  var upload, fileKey;
+  
+  // Upload locally if not production.
+  if(process.env.NODE_ENV !== 'production'){
+    upload = multer(config.uploads.profileUpload).single('newProfilePicture');
+  } else {
+    // Production - upload to s3.
+    fileKey = 'profile_pic_' + Date.now().toString();
+    upload = multer({
+      storage: multerS3({
+        s3: s3,
+        bucket: config.s3bucket,
+        metadata: function (req, file, cb) {
+          cb(null, { fieldName: file.fieldname });
+        },
+        key: function (req, file, cb) {
+          cb(null, fileKey);
+        }
+      })
+    }).single('newProfilePicture');
+  }
   
   // Filtering to upload only images
+  var profileUploadFileFilter = require(path.resolve('./config/lib/multer')).profileUploadFileFilter;
   upload.fileFilter = profileUploadFileFilter;
 
   if (user) {
@@ -97,7 +110,9 @@ exports.changeProfilePicture = function (req, res) {
         });
       } else {
         //Success, Delete old profileImg if exists.
-        if(user.profileImageURL){
+        if(process.env.NODE_ENV){
+          fileKey = req.file.filename;
+        } else if(user.profileImageURL){
           s3.deleteObjects({
             Bucket: config.s3bucket,
             Delete: {
